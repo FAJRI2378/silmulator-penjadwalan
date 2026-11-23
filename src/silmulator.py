@@ -1,4 +1,17 @@
 # src/simulator.py
+import tracemalloc
+
+
+def ukur_memori(simulasi):
+    tracemalloc.start()
+    try:
+        memori_awal, _ = tracemalloc.get_traced_memory()
+        tracemalloc.reset_peak()
+        hasil = simulasi()
+        _, puncak_memori = tracemalloc.get_traced_memory()
+        return hasil, max(0, puncak_memori - memori_awal)
+    finally:
+        tracemalloc.stop()
 
 def hitung_fcfs(proses):
     waktu_sekarang = 0
@@ -121,12 +134,15 @@ if __name__ == "__main__":
         bt = int(input("Burst Time   : "))
         daftar_proses.append({'id': f'P{i+1}', 'at': at, 'bt': bt})
         
-    # Eksekusi secara berurutan menggunakan salinan data (.copy())
-    hasil_fcfs = hitung_fcfs(daftar_proses.copy())
+    # Salinan input dibuat di dalam pengukuran agar alokasi simulasi ikut dihitung.
+    hasil_fcfs, memori_fcfs = ukur_memori(lambda: hitung_fcfs(daftar_proses.copy()))
     cetak_tabel(hasil_fcfs, "First-Come First-Served (FCFS)")
+    print(f"MEMORY YANG DI GUNAKAN (FCFS): {memori_fcfs} byte ({memori_fcfs / 1024:.2f} KiB)")
     
-    hasil_sjf = hitung_sjf(daftar_proses.copy())
+    hasil_sjf, memori_sjf = ukur_memori(lambda: hitung_sjf(daftar_proses.copy()))
     cetak_tabel(hasil_sjf, "Shortest Job First (SJF)")
+    print(f"MEMORY YANG DI GUNAKAN (SJF): {memori_sjf} byte ({memori_sjf / 1024:.2f} KiB)")
     
-    hasil_rr = hitung_rr(daftar_proses.copy(), quantum)
+    hasil_rr, memori_rr = ukur_memori(lambda: hitung_rr(daftar_proses.copy(), quantum))
     cetak_tabel(hasil_rr, f"Round Robin (Quantum = {quantum})")
+    print(f"MEMORY YANG DI GUNAKAN (Round Robin): {memori_rr} byte ({memori_rr / 1024:.2f} KiB)")

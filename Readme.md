@@ -5,7 +5,9 @@ Proyek ini adalah simulator penjadwalan CPU berbasis antarmuka teks (CLI) yang d
 ## Fitur (MVP)
 * Input dinamis: ID Proses, Arrival Time, Burst Time, dan Time Quantum.
 * Algoritma: First-Come First-Served (FCFS), Shortest Job First (SJF), dan Round Robin (RR).
-* Output: Tabel metrik waktu (CT, TAT, WT, dan Rata-rata).
+* Output: Tabel metrik waktu (CT, TAT, WT, dan rata-rata), serta puncak alokasi memori Python selama simulasi tiap algoritma.
+
+Pengukuran memori menggunakan `tracemalloc`, sehingga menunjukkan puncak alokasi objek Python selama pemanggilan algoritma (byte dan KiB). Nilainya bergantung pada versi Python dan lingkungan; nilai ini bukan total RAM proses atau sistem operasi. Kompleksitas ruang tambahan ketiga algoritma adalah O(n), dengan n sebagai jumlah proses.
 
 ## Cara Menjalankan
 1. Pastikan Python 3 sudah terinstal.
